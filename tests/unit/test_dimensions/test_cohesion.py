@@ -1,6 +1,5 @@
 """Tests Dimension 8 — Cohesion. Règle des 3 cas : V, S (N/A), IV."""
 
-import pytest
 from findata_dq.dimensions.cohesion import Cohesion
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 

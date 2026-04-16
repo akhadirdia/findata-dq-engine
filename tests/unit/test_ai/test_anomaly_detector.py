@@ -152,7 +152,7 @@ class TestIsolationForestFraudRecall:
         records, labels = fraud_data
         normal_mask = [lbl == "NORMAL" for lbl in labels]
         detector = MLAnomalyDetector(contamination=0.05, n_estimators=200)
-        detector.fit([r for r, m in zip(records, normal_mask) if m])
+        detector.fit([r for r, m in zip(records, normal_mask, strict=False) if m])
         return detector
 
     def test_fixture_charge(self, fraud_data):
@@ -170,7 +170,7 @@ class TestIsolationForestFraudRecall:
 
         detected = 0
         total_outlier = 0
-        for lbl, result in zip(labels, results):
+        for lbl, result in zip(labels, results, strict=False):
             if lbl == "MONTANT_OUTLIER_ISOLATION_FOREST":
                 total_outlier += 1
                 if result.status in (DQStatus.INVALID, DQStatus.SUSPECT):
@@ -191,7 +191,7 @@ class TestIsolationForestFraudRecall:
         results = trained_detector.predict(records)
 
         fp = sum(
-            1 for lbl, r in zip(labels, results)
+            1 for lbl, r in zip(labels, results, strict=False)
             if lbl == "NORMAL" and r.status == DQStatus.INVALID
         )
         total_normal = labels.count("NORMAL")
@@ -205,8 +205,8 @@ class TestIsolationForestFraudRecall:
         records, labels = fraud_data
         scores = trained_detector.anomaly_score(records)
 
-        outlier_scores = [s for s, l in zip(scores, labels) if l == "MONTANT_OUTLIER_ISOLATION_FOREST"]
-        normal_scores  = [s for s, l in zip(scores, labels) if l == "NORMAL"]
+        outlier_scores = [s for s, lbl in zip(scores, labels, strict=False) if lbl == "MONTANT_OUTLIER_ISOLATION_FOREST"]
+        normal_scores  = [s for s, lbl in zip(scores, labels, strict=False) if lbl == "NORMAL"]
 
         assert sum(outlier_scores) / len(outlier_scores) < sum(normal_scores) / len(normal_scores)
 

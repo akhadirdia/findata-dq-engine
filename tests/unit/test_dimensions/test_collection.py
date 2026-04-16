@@ -1,6 +1,5 @@
 """Tests Dimension 7 — Collection. Règle des 3 cas : V, S, IV."""
 
-import pytest
 from findata_dq.dimensions.collection import Collection
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 

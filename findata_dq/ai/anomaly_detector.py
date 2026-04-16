@@ -27,7 +27,7 @@ Seuils de décision (score anomalie = decision_function sklearn, plus élevé = 
 from __future__ import annotations
 
 import os
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from typing import Any
 from uuid import uuid4
 
@@ -160,7 +160,7 @@ class MLAnomalyDetector:
 
     # ── Entraînement ────────────────────────────────────────────────────────
 
-    def fit(self, records: list[dict]) -> "MLAnomalyDetector":
+    def fit(self, records: list[dict]) -> MLAnomalyDetector:
         """
         Entraîne l'Isolation Forest sur des enregistrements supposés normaux.
 
@@ -211,7 +211,7 @@ class MLAnomalyDetector:
         _score_map = {DQStatus.VALID: 1.0, DQStatus.SUSPECT: 0.5, DQStatus.INVALID: 0.0}
 
         results: list[DQResult] = []
-        for record, if_score, pred in zip(records, scores, predictions):
+        for record, if_score, pred in zip(records, scores, predictions, strict=False):
             record_id = str(record.get("record_id", record.get("id_sinistre", "?")))
             dataset = str(record.get("dataset", "claims"))
 
@@ -255,7 +255,7 @@ class MLAnomalyDetector:
                         "threshold_valid": THRESHOLD_VALID,
                         "threshold_suspect": THRESHOLD_SUSPECT,
                     },
-                    evaluated_at=datetime.now(tz=timezone.utc),
+                    evaluated_at=datetime.now(tz=UTC),
                 )
             )
         return results
@@ -279,7 +279,7 @@ class MLAnomalyDetector:
         if normal_mask is None:
             normal_mask = [True] * len(records)
 
-        train = [r for r, is_normal in zip(records, normal_mask) if is_normal]
+        train = [r for r, is_normal in zip(records, normal_mask, strict=False) if is_normal]
         if not train:
             raise ValueError("normal_mask ne contient aucun enregistrement True.")
 

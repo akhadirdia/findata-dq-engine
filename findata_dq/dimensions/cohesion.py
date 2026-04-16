@@ -55,8 +55,9 @@ class Cohesion(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config (REQUIS pour fonctionner) :
           fk_checks       : list[tuple[str, set]]  — [(field_name, valid_ids_set), ...]

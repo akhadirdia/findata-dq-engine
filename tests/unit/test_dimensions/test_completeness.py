@@ -1,6 +1,5 @@
 """Tests Dimension 1 — Completeness. Règle des 3 cas : V, S, IV."""
 
-import pytest
 from findata_dq.dimensions.completeness import Completeness
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 

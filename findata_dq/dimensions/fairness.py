@@ -74,8 +74,9 @@ class Fairness(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Ce validator opère sur un enregistrement de type FairnessMetrics
         (déjà calculé en amont par le pipeline), pas sur une ligne de données brutes.

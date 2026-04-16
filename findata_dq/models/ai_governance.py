@@ -6,10 +6,9 @@ Domaine E : métadonnées modèles, métriques de biais, drift, explicabilité.
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
-
 
 # ─── Métadonnées de modèle ────────────────────────────────────────────────────
 
@@ -24,24 +23,24 @@ class ModelMetadata(BaseModel):
     model_name: str = Field(description="Nom lisible ex: scoring_risque_auto_v2")
     model_version: str = Field(description="Version sémantique ex: 2.1.3")
     training_date: date = Field(description="Date d'entraînement — clé pour Timeliness")
-    deployment_date: Optional[date] = None
+    deployment_date: date | None = None
     statut_production: Literal["en_dev", "staging", "production", "retire", "archive"]
 
     # Métriques de performance
-    accuracy: Optional[float] = Field(default=None, ge=0.0, le=1.0)
-    precision: Optional[float] = Field(default=None, ge=0.0, le=1.0)
-    recall: Optional[float] = Field(default=None, ge=0.0, le=1.0)
-    f1_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
-    auc_roc: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    accuracy: float | None = Field(default=None, ge=0.0, le=1.0)
+    precision: float | None = Field(default=None, ge=0.0, le=1.0)
+    recall: float | None = Field(default=None, ge=0.0, le=1.0)
+    f1_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    auc_roc: float | None = Field(default=None, ge=0.0, le=1.0)
 
     # Dérive (ModelDrift dimension)
-    drift_score: Optional[float] = Field(
+    drift_score: float | None = Field(
         default=None,
         ge=0.0,
         description="PSI global — V<0.10, S<0.25, IV>=0.25"
     )
-    drift_status: Optional[Literal["V", "S", "IV"]] = None
-    last_drift_check: Optional[date] = None
+    drift_status: Literal["V", "S", "IV"] | None = None
+    last_drift_check: date | None = None
 
     # Conformité réglementaire
     ai_act_compliance_flag: Literal["compliant", "non_compliant", "under_review"] = "under_review"
@@ -56,11 +55,11 @@ class ModelMetadata(BaseModel):
         default_factory=list,
         description="Top features par importance SHAP"
     )
-    shap_computed_at: Optional[date] = None
+    shap_computed_at: date | None = None
 
     # Traçabilité
-    owner_equipe: Optional[str] = None
-    date_creation: Optional[datetime] = None
+    owner_equipe: str | None = None
+    date_creation: datetime | None = None
 
     @property
     def needs_retraining(self) -> bool:
@@ -87,24 +86,24 @@ class FairnessMetrics(BaseModel):
     evaluation_date: date = Field(default_factory=date.today)
 
     # Métriques (voir Section 4 — Dimension 10)
-    disparate_impact: Optional[float] = Field(
+    disparate_impact: float | None = Field(
         default=None,
         description="DI = P(défavorable|groupe_A) / P(défavorable|groupe_B). Seuil légal [0.80, 1.25]"
     )
-    demographic_parity: Optional[float] = Field(
+    demographic_parity: float | None = Field(
         default=None,
         description="|P(score_haut|A) - P(score_haut|B)|. V<0.05, IV>=0.10"
     )
-    equalized_odds: Optional[float] = Field(
+    equalized_odds: float | None = Field(
         default=None,
         description="|TPR_A - TPR_B|. V<0.05, IV>=0.10"
     )
 
     # Classification DQ
     status: Literal["V", "S", "IV"] = "V"
-    violation_details: Optional[str] = None
-    mitigation_applied: Optional[str] = None
-    ai_act_article: Optional[str] = Field(
+    violation_details: str | None = None
+    mitigation_applied: str | None = None
+    ai_act_article: str | None = Field(
         default=None,
         description="Article AI Act applicable ex: Article 10(3)"
     )
@@ -147,9 +146,9 @@ class ModelAuditLog(BaseModel):
     record_id: str = Field(description="Enregistrement sur lequel la décision a été prise")
     decision: str = Field(description="Décision prise ex: prime_elevee, sinistre_accepte")
     risk_score: float = Field(ge=0.0, le=1.0)
-    confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     input_features: dict[str, Any] = Field(description="Features utilisées — sans PII si possible")
-    mitigation_appliquee: Optional[str] = None
+    mitigation_appliquee: str | None = None
     ai_act_compliance_flag: Literal["compliant", "non_compliant", "under_review"] = "under_review"
     reviewed_by_human: bool = False
     timestamp: datetime = Field(default_factory=datetime.utcnow)

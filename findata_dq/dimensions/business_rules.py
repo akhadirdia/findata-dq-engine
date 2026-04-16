@@ -19,7 +19,7 @@ Règles IA (modèles) :
 
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Any
 
 from findata_dq.dimensions.base import BaseDimension
@@ -52,8 +52,9 @@ class BusinessRules(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Les règles activées dépendent du dataset.
         Toutes les règles applicables sont évaluées automatiquement.

@@ -1,13 +1,12 @@
 """Tests Dimension 2 — Timeliness. Règle des 3 cas : V, S, IV."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
-import pytest
 from findata_dq.dimensions.timeliness import Timeliness
 from findata_dq.models.dq_result import DQStatus
 
 dim = Timeliness()
-NOW = datetime.now(timezone.utc)
+NOW = datetime.now(UTC)
 
 
 def _record_with_date(field: str, dt: datetime, mode: str = "insurance", dataset: str = "policies"):

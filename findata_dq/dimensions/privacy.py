@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import os
 import re
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Any
 
 from findata_dq.dimensions.base import BaseDimension
@@ -76,8 +76,9 @@ class Privacy(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config :
           pipeline_env       : str        — 'development'|'staging'|'production'

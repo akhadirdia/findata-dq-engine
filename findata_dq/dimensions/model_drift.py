@@ -25,12 +25,11 @@ les données de production divergent des données d'entraînement.
 from __future__ import annotations
 
 import math
+import os
 from typing import Any
 
 from findata_dq.dimensions.base import BaseDimension
 from findata_dq.models.dq_result import DQResult, DQStatus, ImpactLevel
-
-import os
 
 # Seuils PSI (CLAUDE.md section 4)
 _PSI_V  = float(os.getenv("PSI_S_THRESHOLD", "0.10"))
@@ -78,7 +77,7 @@ def _compute_psi(actual: list[float], expected: list[float]) -> float:
     """
     eps = 1e-6
     psi = 0.0
-    for a, e in zip(actual, expected):
+    for a, e in zip(actual, expected, strict=False):
         a = max(a, eps)
         e = max(e, eps)
         psi += (a - e) * math.log(a / e)
@@ -89,7 +88,7 @@ def _compute_kl(p: list[float], q: list[float]) -> float:
     """Calcule la divergence KL entre deux distributions."""
     eps = 1e-6
     kl = 0.0
-    for pi, qi in zip(p, q):
+    for pi, qi in zip(p, q, strict=False):
         pi = max(pi, eps)
         qi = max(qi, eps)
         kl += pi * math.log(pi / qi)
@@ -109,8 +108,9 @@ class ModelDrift(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config :
           accuracy_baseline : float          — accuracy de référence (entraînement)

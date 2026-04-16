@@ -6,10 +6,9 @@ DQResult est le type de retour universel de toutes les dimensions.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
-
 
 # ─── Constantes de classification ─────────────────────────────────────────────
 
@@ -30,7 +29,7 @@ class ImpactLevel:
 class RemediationResult(BaseModel):
     """Suggestion de correction générée par le LLM ou une règle déterministe."""
 
-    suggested_value: Optional[str] = None
+    suggested_value: str | None = None
     confidence: float = Field(ge=0.0, le=1.0)
     action: Literal["auto_fix", "human_review", "reject"]
     explanation: str
@@ -52,7 +51,7 @@ class DQResult(BaseModel):
     dataset: str = Field(description="Nom du dataset source : policies, claims, logs, model_metadata")
     record_id: str = Field(description="Identifiant de la ligne testée")
     field_name: str = Field(description="Nom de la colonne testée")
-    field_value: Optional[str] = Field(default=None, description="Valeur testée (masquée si PII)")
+    field_value: str | None = Field(default=None, description="Valeur testée (masquée si PII)")
 
     # Classification DQ
     dimension: str = Field(description="Nom de la dimension Buzzelli appliquée")
@@ -65,20 +64,20 @@ class DQResult(BaseModel):
     details: dict[str, Any] = Field(default_factory=dict, description="Valeurs intermédiaires de calcul")
 
     # Impact financier
-    financial_impact_usd: Optional[float] = Field(
+    financial_impact_usd: float | None = Field(
         default=None,
         description="Estimation de l'impact financier en USD si la donnée IV n'est pas corrigée"
     )
 
     # Remédiation (rempli après passage par la couche LLM)
-    remediation: Optional[RemediationResult] = None
+    remediation: RemediationResult | None = None
 
     # Traçabilité
     evaluated_at: datetime = Field(default_factory=datetime.utcnow)
-    pipeline_env: Optional[str] = None
+    pipeline_env: str | None = None
 
     @model_validator(mode="after")
-    def set_score_from_status(self) -> "DQResult":
+    def set_score_from_status(self) -> DQResult:
         """Normalise le score DQ selon le statut si non fourni explicitement."""
         if self.score == 0.0 and self.status != "IV":
             score_map = {"V": 1.0, "S": 0.5, "IV": 0.0}

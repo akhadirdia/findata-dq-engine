@@ -22,7 +22,7 @@ Logique : Vérifier la fraîcheur des données par rapport à la date du jour.
 from __future__ import annotations
 
 import os
-from datetime import date, datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from findata_dq.dimensions.base import BaseDimension
@@ -70,7 +70,7 @@ def _parse_date_field(value: Any) -> datetime | None:
     try:
         dt = datetime.fromisoformat(s)
         if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
+            dt = dt.replace(tzinfo=UTC)
         return dt
     except ValueError:
         pass
@@ -83,7 +83,7 @@ def _parse_date_field(value: Any) -> datetime | None:
     ):
         try:
             dt = datetime.strptime(s, fmt)
-            return dt.replace(tzinfo=timezone.utc)
+            return dt.replace(tzinfo=UTC)
         except ValueError:
             continue
     return None
@@ -126,8 +126,9 @@ class Timeliness(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config :
           date_fields : dict[str, str]  — {field_name: 'insurance'|'realtime'|'model'}
@@ -135,7 +136,7 @@ class Timeliness(BaseDimension):
           reference_dt: datetime        — date de référence (défaut: now UTC, utile pour tests)
         """
         dataset = record.get("dataset", config.get("dataset", "unknown"))
-        now_utc = config.get("reference_dt", datetime.now(timezone.utc))
+        now_utc = config.get("reference_dt", datetime.now(UTC))
         results: list[DQResult] = []
 
         date_fields: dict[str, str] = config.get(

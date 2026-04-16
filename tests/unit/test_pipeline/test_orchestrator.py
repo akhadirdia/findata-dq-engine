@@ -23,13 +23,12 @@ from pathlib import Path
 
 import pytest
 
+from findata_dq.models.dq_result import DQStatus
 from findata_dq.pipeline.orchestrator import (
     DQOrchestrator,
     OrchestratorConfig,
     _infer_dataset,
-    _load_csv,
 )
-from findata_dq.models.dq_result import DQStatus
 
 FIXTURES_DIR = Path(__file__).parents[3] / "tests" / "fixtures"
 TODAY = date.today()

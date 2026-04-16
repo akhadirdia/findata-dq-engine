@@ -12,14 +12,14 @@ _ROOT = Path(__file__).parent.parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status  # noqa: E402
 
-from findata_dq.pipeline.orchestrator import DQOrchestrator, OrchestratorConfig
-from api.schemas.validate import (
+from api.schemas.validate import (  # noqa: E402
     DimensionSummaryOut,
     ValidateRequest,
     ValidateResponse,
 )
+from findata_dq.pipeline.orchestrator import DQOrchestrator, OrchestratorConfig  # noqa: E402
 
 router = APIRouter(prefix="/validate", tags=["Validation DQ"])
 

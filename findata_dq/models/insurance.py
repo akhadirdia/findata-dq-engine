@@ -6,10 +6,9 @@ Domaine A : polices, sinistres, clients, véhicules.
 from __future__ import annotations
 
 from datetime import date
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
-
 
 # ─── Police / Contrat ─────────────────────────────────────────────────────────
 
@@ -28,10 +27,10 @@ class Policy(BaseModel):
     montant_assure: float = Field(gt=0, description="Montant maximum couvert en CAD")
     statut_police: Literal["active", "expiree", "suspendue", "resiliee"] = "active"
     franchise: float = Field(default=0.0, ge=0)
-    date_creation: Optional[date] = None
+    date_creation: date | None = None
 
     @model_validator(mode="after")
-    def validate_dates(self) -> "Policy":
+    def validate_dates(self) -> Policy:
         if self.date_expiration <= self.date_effet:
             raise ValueError("date_expiration doit être postérieure à date_effet")
         return self
@@ -57,9 +56,9 @@ class Claim(BaseModel):
     num_police: str = Field(description="Référence vers Policy.num_police")
     id_client: str = Field(description="Référence vers Client.id_client")
     date_sinistre: date = Field(description="Date de survenance du sinistre")
-    date_declaration: Optional[date] = Field(default=None, description="Date de déclaration à l'assureur")
+    date_declaration: date | None = Field(default=None, description="Date de déclaration à l'assureur")
     montant_reclame: float = Field(gt=0, description="Montant réclamé en CAD")
-    montant_rembourse: Optional[float] = Field(default=None, ge=0)
+    montant_rembourse: float | None = Field(default=None, ge=0)
     type_dommage: Literal[
         "collision", "vol", "incendie", "degats_eau", "bris_glace",
         "responsabilite_civile", "vandalisme", "catastrophe_naturelle", "autre"
@@ -67,18 +66,18 @@ class Claim(BaseModel):
     cause_sinistre: str = Field(description="Description libre de la cause")
     statut_sinistre: Literal["ouvert", "ferme", "en_cours", "rejete", "paye"]
     code_postal_lieu: str = Field(description="Code postal du lieu du sinistre (format canadien)")
-    expert_assigne: Optional[str] = None
-    date_creation: Optional[date] = None
+    expert_assigne: str | None = None
+    date_creation: date | None = None
 
     # Champs calculés (remplis après validation)
-    delta_jours_declaration: Optional[int] = Field(
+    delta_jours_declaration: int | None = Field(
         default=None,
         description="Jours entre sinistre et déclaration — utilisé par Timeliness"
     )
 
     @field_validator("montant_rembourse")
     @classmethod
-    def rembourse_coherent(cls, v: Optional[float]) -> Optional[float]:
+    def rembourse_coherent(cls, v: float | None) -> float | None:
         return v  # La vérification cross-champ se fait dans BusinessRules
 
 
@@ -95,11 +94,11 @@ class Client(BaseModel):
     age: int = Field(ge=16, le=120, description="Âge en années — attribut protégé Fairness")
     sexe: Literal["H", "F", "NB", "ND"] = Field(description="Attribut protégé Fairness")
     code_postal: str = Field(description="Code postal canadien — proxy socioéconomique")
-    revenu_estime: Optional[float] = Field(default=None, description="PII — jamais en clair hors prod")
+    revenu_estime: float | None = Field(default=None, description="PII — jamais en clair hors prod")
     historique_sinistres: int = Field(ge=0, description="Nombre de sinistres sur 5 ans")
     score_risque_client: float = Field(ge=0.0, le=1.0, description="Score de risque (output modèle)")
     consentement_analytique: bool = Field(default=False)
-    date_creation: Optional[date] = None
+    date_creation: date | None = None
 
     @property
     def is_high_risk(self) -> bool:
@@ -124,9 +123,9 @@ class Vehicle(BaseModel):
     modele: str
     annee_fabrication: int = Field(ge=1900, le=2030)
     valeur_estimee: float = Field(gt=0, description="Valeur marchande estimée en CAD")
-    kilometrage: Optional[int] = Field(default=None, ge=0)
+    kilometrage: int | None = Field(default=None, ge=0)
     usage: Literal["personnel", "commercial", "mixte"] = "personnel"
-    date_creation: Optional[date] = None
+    date_creation: date | None = None
 
     @property
     def age_vehicule(self) -> int:

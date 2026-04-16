@@ -1,6 +1,5 @@
 """Tests Dimension 10 — Fairness. Règle des 3 cas : V, S, IV."""
 
-import pytest
 from findata_dq.dimensions.fairness import Fairness
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 

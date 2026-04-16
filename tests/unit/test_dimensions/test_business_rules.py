@@ -3,6 +3,7 @@
 from datetime import date, timedelta
 
 import pytest
+
 from findata_dq.dimensions.business_rules import BusinessRules
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 

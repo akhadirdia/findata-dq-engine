@@ -12,7 +12,7 @@ from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 from uuid import uuid4
 
 from findata_dq.models.dq_result import DQResult, DQStatus, ImpactLevel
@@ -49,8 +49,9 @@ class BaseDimension(ABC):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Valide un enregistrement selon cette dimension.
 
@@ -76,9 +77,9 @@ class BaseDimension(ABC):
         impact: str,
         rule_applied: str,
         field_value: Any = None,
-        details: Optional[dict[str, Any]] = None,
-        financial_impact_usd: Optional[float] = None,
-        score: Optional[float] = None,
+        details: dict[str, Any] | None = None,
+        financial_impact_usd: float | None = None,
+        score: float | None = None,
     ) -> DQResult:
         """
         Construit un DQResult standardisé.
@@ -117,7 +118,7 @@ class BaseDimension(ABC):
     # ── Helpers utilitaires ───────────────────────────────────────────────────
 
     @staticmethod
-    def _mask_if_pii(field_name: str, value: Any) -> Optional[str]:
+    def _mask_if_pii(field_name: str, value: Any) -> str | None:
         """
         Masque la valeur si le champ est identifié comme PII.
         Les champs PII ne sont jamais stockés en clair dans DQResult.
@@ -186,7 +187,7 @@ class DimensionRegistry:
     def register(self, dimension: BaseDimension) -> None:
         self._dimensions[dimension.name] = dimension
 
-    def get(self, name: str) -> Optional[BaseDimension]:
+    def get(self, name: str) -> BaseDimension | None:
         return self._dimensions.get(name)
 
     def all(self) -> list[BaseDimension]:

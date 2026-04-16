@@ -18,16 +18,14 @@ Blocs
 from __future__ import annotations
 
 import json
-from datetime import datetime
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pytest
 
-from findata_dq.ai.remediation import LLMRemediator, _fallback_remediation, _build_user_prompt
-from findata_dq.models.dq_result import DQResult, DQStatus, ImpactLevel, RemediationResult
-
+from findata_dq.ai.remediation import LLMRemediator, _build_user_prompt, _fallback_remediation
+from findata_dq.models.dq_result import DQResult, DQStatus, ImpactLevel
 
 # ── Factory de DQResult IV ────────────────────────────────────────────────────
 

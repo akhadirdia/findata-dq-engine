@@ -6,12 +6,11 @@ C'est l'output principal du pipeline après passage par les 12 dimensions.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, computed_field
 
 from findata_dq.models.dq_result import DQResult, RecordSummary
-
 
 # ─── Résumé par dimension ─────────────────────────────────────────────────────
 
@@ -94,7 +93,7 @@ class Scorecard(BaseModel):
     nb_llm_remediations: int = 0
 
     # Timing
-    pipeline_duration_seconds: Optional[float] = None
+    pipeline_duration_seconds: float | None = None
 
     @computed_field
     @property
@@ -104,7 +103,7 @@ class Scorecard(BaseModel):
         nb_v = sum(1 for r in self.results if r.status == "V")
         return round(nb_v / self.total_fields_tested, 4)
 
-    def get_iv_results(self, impact: Optional[str] = None) -> list[DQResult]:
+    def get_iv_results(self, impact: str | None = None) -> list[DQResult]:
         """Retourne les résultats IV, filtrés par niveau d'impact si fourni."""
         ivs = [r for r in self.results if r.status == "IV"]
         if impact:
@@ -157,11 +156,11 @@ class DQReport(BaseModel):
     global_dq_score: float
     nb_iv_high_impact: int
     financial_impact_cad: float
-    trend_vs_previous: Optional[str] = Field(
+    trend_vs_previous: str | None = Field(
         default=None,
         description="Comparaison avec la scorecard précédente ex: +2.3 points"
     )
 
     # Conformité réglementaire
-    loi25_status: Optional[Literal["conforme", "non_conforme", "en_cours"]] = None
+    loi25_status: Literal["conforme", "non_conforme", "en_cours"] | None = None
     ai_act_flags: list[str] = Field(default_factory=list)

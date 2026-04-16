@@ -4,13 +4,12 @@ Fixtures pytest partagées entre tous les tests du pipeline findata-dq-engine.
 
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 
 import pytest
 
-
 TODAY = date.today()
-NOW_UTC = datetime.now(timezone.utc)
+NOW_UTC = datetime.now(UTC)
 
 
 # ─── Records valides ──────────────────────────────────────────────────────────

@@ -18,7 +18,6 @@ Trois algorithmes (CLAUDE.md section 4) :
 
 from __future__ import annotations
 
-import math
 from typing import Any
 
 from findata_dq.dimensions.base import BaseDimension
@@ -55,8 +54,9 @@ class Congruence(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config (au moins un algorithme doit être fourni) :
           fields          : list[str]         — champs à tester

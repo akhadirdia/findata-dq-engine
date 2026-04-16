@@ -5,10 +5,9 @@ Séparés des modèles internes pour découpler la couche API du moteur DQ.
 
 from __future__ import annotations
 
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
-
 
 # ── Requête ───────────────────────────────────────────────────────────────────
 
@@ -113,7 +112,7 @@ class ValidateResponse(BaseModel):
     nb_iv_high_impact: int
     nb_s_total: int
     nb_records_mastered_eligible: int
-    pipeline_duration_seconds: Optional[float]
+    pipeline_duration_seconds: float | None
 
     # ML
     nb_ml_anomalies: int
@@ -127,4 +126,4 @@ class ValidateResponse(BaseModel):
     by_dimension: dict[str, DimensionSummaryOut]
 
     # Résultats bruts (optionnels — activés via include_raw_results)
-    raw_results: Optional[list[dict[str, Any]]] = None
+    raw_results: list[dict[str, Any]] | None = None

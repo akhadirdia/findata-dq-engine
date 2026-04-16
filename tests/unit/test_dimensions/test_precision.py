@@ -1,6 +1,5 @@
 """Tests Dimension 4 — Precision. Règle des 3 cas : V, S, IV."""
 
-import pytest
 from findata_dq.dimensions.precision import Precision
 from findata_dq.models.dq_result import DQStatus
 

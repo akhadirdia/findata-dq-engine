@@ -58,8 +58,9 @@ class Conformity(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config :
           fields          : list[str]              — champs à tester (écrase le défaut par dataset)

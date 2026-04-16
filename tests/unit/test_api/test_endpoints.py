@@ -17,7 +17,6 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-import pytest
 from fastapi.testclient import TestClient
 
 from api.main import app

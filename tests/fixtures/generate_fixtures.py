@@ -13,9 +13,7 @@ Fichiers générés :
 from __future__ import annotations
 
 import csv
-import os
 import random
-import re
 import string
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -98,7 +96,7 @@ def generate_policies_valid(n: int = 500) -> list[dict]:
     statuts = ["active", "active", "active", "active", "suspendue"]  # majorité active
 
     records = []
-    for i in range(n):
+    for i in range(n):  # noqa: B007
         client_id = rand_client_id()
         num_police = rand_policy_num()
         effet = rand_date(TODAY - timedelta(days=60), TODAY - timedelta(days=10))
@@ -136,7 +134,7 @@ def generate_policies_invalid(n: int = 500) -> list[dict]:
     records = []
 
     # 400 valides
-    for i in range(400):
+    for i in range(400):  # noqa: B007
         client_id = rand_client_id()
         effet = rand_date(TODAY - timedelta(days=60), TODAY - timedelta(days=10))
         expiration = effet + timedelta(days=random.choice([365, 730]))
@@ -176,7 +174,7 @@ def generate_policies_invalid(n: int = 500) -> list[dict]:
         records.append(row)
 
     # 20 × Timeliness IV — date_creation > 90 jours
-    for i in range(20):
+    for i in range(20):  # noqa: B007
         effet = rand_date(TODAY - timedelta(days=200), TODAY - timedelta(days=120))
         expiration = effet + timedelta(days=365)
         prime = round(np.random.lognormal(mean=7.5, sigma=0.4), 2)
@@ -241,7 +239,7 @@ def generate_policies_invalid(n: int = 500) -> list[dict]:
         })
 
     # 20 × BusinessRules IV — date_expiration < date_effet
-    for i in range(20):
+    for i in range(20):  # noqa: B007
         effet = rand_date(TODAY - timedelta(days=30), TODAY - timedelta(days=5))
         expiration = effet - timedelta(days=random.randint(1, 100))  # incohérence !
         prime = round(np.random.lognormal(mean=7.5, sigma=0.4), 2)
@@ -287,7 +285,7 @@ def generate_claims_fraud(n: int = 200) -> list[dict]:
     records = []
 
     # 70 sinistres normaux
-    for i in range(70):
+    for i in range(70):  # noqa: B007
         montant_assure = round(np.random.lognormal(mean=10, sigma=0.5), 2)
         montant_reclame = round(montant_assure * random.uniform(0.01, 0.3), 2)
         effet = rand_date(TODAY - timedelta(days=365), TODAY - timedelta(days=60))
@@ -313,7 +311,7 @@ def generate_claims_fraud(n: int = 200) -> list[dict]:
         })
 
     # 30 × montant_reclame > montant_assure (BR-R2)
-    for i in range(30):
+    for i in range(30):  # noqa: B007
         montant_assure = round(random.uniform(5_000, 50_000), 2)
         montant_reclame = round(montant_assure * random.uniform(1.5, 5.0), 2)  # dépasse !
         effet = rand_date(TODAY - timedelta(days=300), TODAY - timedelta(days=60))
@@ -339,7 +337,7 @@ def generate_claims_fraud(n: int = 200) -> list[dict]:
         })
 
     # 30 × date_sinistre hors période de couverture (BR-R1)
-    for i in range(30):
+    for i in range(30):  # noqa: B007
         montant_assure = round(random.uniform(10_000, 80_000), 2)
         montant_reclame = round(montant_assure * random.uniform(0.05, 0.25), 2)
         effet = rand_date(TODAY - timedelta(days=365), TODAY - timedelta(days=180))
@@ -366,7 +364,7 @@ def generate_claims_fraud(n: int = 200) -> list[dict]:
         })
 
     # 30 × sinistre ouvert sur police expirée (BR-R3)
-    for i in range(30):
+    for i in range(30):  # noqa: B007
         montant_assure = round(random.uniform(10_000, 80_000), 2)
         montant_reclame = round(montant_assure * 0.1, 2)
         effet = rand_date(TODAY - timedelta(days=730), TODAY - timedelta(days=400))
@@ -392,7 +390,7 @@ def generate_claims_fraud(n: int = 200) -> list[dict]:
         })
 
     # 40 × montants outlier (Congruence + Isolation Forest fraude)
-    for i in range(40):
+    for i in range(40):  # noqa: B007
         montant_assure = round(random.uniform(20_000, 100_000), 2)
         # montants extrêmes : 200k-500k sur des polices de 20k-100k
         montant_reclame = round(random.uniform(200_000, 500_000), 2)

@@ -32,19 +32,27 @@ from __future__ import annotations
 import csv
 import time
 from dataclasses import dataclass, field
-from datetime import date, datetime, time as dtime, timezone
+from datetime import UTC, date, datetime
+from datetime import time as dtime
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
 from findata_dq.dimensions import (
-    Accuracy, BusinessRules, Cohesion, Collection,
-    Completeness, Congruence, Conformity, Fairness,
-    ModelDrift, Privacy, Precision, Timeliness,
+    Accuracy,
+    BusinessRules,
+    Collection,
+    Completeness,
+    Conformity,
+    Congruence,
+    Fairness,
+    ModelDrift,
+    Precision,
+    Privacy,
+    Timeliness,
 )
 from findata_dq.models.dq_result import DQResult, DQStatus, ImpactLevel, RecordSummary
 from findata_dq.models.scorecard import DimensionSummary, FinancialImpact, Scorecard
-
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
@@ -150,7 +158,7 @@ def _build_record_config(cfg: OrchestratorConfig) -> dict:
     """Construit le dict config passé à chaque dimension par enregistrement."""
     # Timeliness attend un datetime avec timezone, pas une date
     ref_date = cfg.reference_dt or date.today()
-    ref_dt = datetime.combine(ref_date, dtime.min).replace(tzinfo=timezone.utc)
+    ref_dt = datetime.combine(ref_date, dtime.min).replace(tzinfo=UTC)
 
     config: dict[str, Any] = {
         "pipeline_env": cfg.pipeline_env,
@@ -244,7 +252,7 @@ def _aggregate(
             rec.financial_impact_total_usd += r.financial_impact_usd
 
     # Recalcul global_score par enregistrement
-    for rid, rec in by_rec.items():
+    for _rid, rec in by_rec.items():
         status_map = {DQStatus.VALID: 1.0, DQStatus.SUSPECT: 0.5, DQStatus.INVALID: 0.0}
         rec.global_score = round(status_map.get(rec.worst_status, 0.0), 4)
 
@@ -279,7 +287,7 @@ def _aggregate(
         scorecard_id=uuid4().hex,
         dataset=dataset,
         pipeline_env=cfg.pipeline_env,
-        evaluated_at=datetime.now(tz=timezone.utc),
+        evaluated_at=datetime.now(tz=UTC),
         total_records=len(records),
         total_fields_tested=len(all_results),
         results=all_results,

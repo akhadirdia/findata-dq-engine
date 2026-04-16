@@ -38,8 +38,9 @@ class Accuracy(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config :
           authority_checks : list[dict]  — vérifications par source d'autorité

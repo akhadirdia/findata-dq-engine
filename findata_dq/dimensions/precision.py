@@ -72,8 +72,9 @@ class Precision(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config :
           fields          : list[str]             — champs à tester (écrase le défaut)
@@ -88,7 +89,7 @@ class Precision(BaseDimension):
 
         # Champs à tester : ceux fournis dans config, ou tous les champs du record qui ont une règle
         fields_to_check: list[str] = config.get("fields", [
-            f for f in record.keys() if f in rules
+            f for f in record if f in rules
         ])
 
         for field in fields_to_check:

@@ -1,6 +1,5 @@
 """Tests Dimension 5 — Conformity. Règle des 3 cas : V, S (N/A), IV."""
 
-import pytest
 from findata_dq.dimensions.conformity import Conformity
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 

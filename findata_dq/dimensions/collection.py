@@ -40,8 +40,9 @@ class Collection(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config (REQUIS) :
           count_checks : list[dict]  — vérifications de nombre d'enregistrements

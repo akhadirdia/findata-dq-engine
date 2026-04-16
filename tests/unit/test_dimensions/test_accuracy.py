@@ -1,6 +1,5 @@
 """Tests Dimension 3 — Accuracy. Règle des 3 cas : V, S, IV."""
 
-import pytest
 from findata_dq.dimensions.accuracy import Accuracy
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 

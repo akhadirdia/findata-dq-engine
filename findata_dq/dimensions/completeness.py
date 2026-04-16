@@ -41,11 +41,9 @@ DEFAULT_MANDATORY: dict[str, list[str]] = {
 
 def _is_empty(value: Any) -> bool:
     """Retourne True si la valeur est considérée comme manquante."""
-    if value is None:
-        return True
-    if isinstance(value, str) and value.strip().lower() in _EMPTY_PLACEHOLDERS:
-        return True
-    return False
+    return value is None or (
+        isinstance(value, str) and value.strip().lower() in _EMPTY_PLACEHOLDERS
+    )
 
 
 class Completeness(BaseDimension):
@@ -61,8 +59,9 @@ class Completeness(BaseDimension):
     def validate(
         self,
         record: dict[str, Any],
-        config: dict[str, Any] = {},
+        config: dict[str, Any] | None = None,
     ) -> list[DQResult]:
+        config = config or {}
         """
         Paramètres config :
           mandatory_fields : list[str]  — champs obligatoires (écrase DEFAULT_MANDATORY)

@@ -1,11 +1,22 @@
 """Modèles Pydantic — exports publics du package models."""
 
-from findata_dq.models.dq_result import DQResult, DQStatus, ImpactLevel, RemediationResult, RecordSummary
-from findata_dq.models.insurance import Policy, Claim, Client, Vehicle
-from findata_dq.models.security import AccessLog, Transaction, ThreatLog
-from findata_dq.models.operational_risk import Incident, ESGRecord, AuditControl
-from findata_dq.models.ai_governance import ModelMetadata, FairnessMetrics, ShapResult, ModelAuditLog
-from findata_dq.models.scorecard import Scorecard, DQReport, DimensionSummary, FinancialImpact
+from findata_dq.models.ai_governance import (
+    FairnessMetrics,
+    ModelAuditLog,
+    ModelMetadata,
+    ShapResult,
+)
+from findata_dq.models.dq_result import (
+    DQResult,
+    DQStatus,
+    ImpactLevel,
+    RecordSummary,
+    RemediationResult,
+)
+from findata_dq.models.insurance import Claim, Client, Policy, Vehicle
+from findata_dq.models.operational_risk import AuditControl, ESGRecord, Incident
+from findata_dq.models.scorecard import DimensionSummary, DQReport, FinancialImpact, Scorecard
+from findata_dq.models.security import AccessLog, ThreatLog, Transaction
 
 __all__ = [
     # DQ core

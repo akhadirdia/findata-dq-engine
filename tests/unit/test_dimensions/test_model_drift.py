@@ -1,7 +1,8 @@
 """Tests Dimension 11 — ModelDrift. Règle des 3 cas : V, S, IV."""
 
 import pytest
-from findata_dq.dimensions.model_drift import ModelDrift, _compute_psi, _compute_kl
+
+from findata_dq.dimensions.model_drift import ModelDrift, _compute_kl, _compute_psi
 from findata_dq.models.dq_result import DQStatus
 
 dim = ModelDrift()

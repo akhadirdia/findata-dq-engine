@@ -2,7 +2,6 @@
 
 from datetime import date, timedelta
 
-import pytest
 from findata_dq.dimensions.privacy import Privacy
 from findata_dq.models.dq_result import DQStatus, ImpactLevel
 
