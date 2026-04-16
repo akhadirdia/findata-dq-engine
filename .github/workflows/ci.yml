@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Lint + Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────────────────────
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ── Python ──────────────────────────────────────────────────────────────
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      # ── Dépendances ─────────────────────────────────────────────────────────
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      # ── Lint (Ruff) ─────────────────────────────────────────────────────────
+      - name: Lint with Ruff
+        run: ruff check findata_dq/ api/ tests/
+
+      # ── Tests + Coverage ────────────────────────────────────────────────────
+      - name: Run tests
+        env:
+          ANTHROPIC_API_KEY: ""          # LLM désactivé en CI
+        run: |
+          pytest tests/unit/ \
+            --cov=findata_dq \
+            --cov=api \
+            --cov-report=term-missing \
+            --cov-report=xml \
+            --cov-fail-under=80 \
+            -v
+
+      # ── Upload coverage ─────────────────────────────────────────────────────
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  # ── Docker build (vérification image) ─────────────────────────────────────
+  docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false          # build only, pas de push registry
+          tags: findata-dq-engine:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

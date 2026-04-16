@@ -1,0 +1,18 @@
+# Inclure les dépendances de production
+-r requirements.txt
+
+# ─── Tests ────────────────────────────────────────────────────────────────────
+pytest>=8.2.0
+pytest-cov>=5.0.0
+pytest-asyncio>=0.23.0
+
+# ─── Qualité de code ──────────────────────────────────────────────────────────
+ruff>=0.4.0
+mypy>=1.10.0
+black>=24.0.0
+
+# ─── Notebooks (case studies) ─────────────────────────────────────────────────
+jupyter>=1.0.0
+ipykernel>=6.29.0
+matplotlib>=3.9.0
+seaborn>=0.13.0

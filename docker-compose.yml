@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+
+  # ── API FastAPI ──────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: findata-dq-engine:latest
+    container_name: findata-dq-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PIPELINE_ENV=${PIPELINE_ENV:-development}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # ── Dashboard Streamlit ──────────────────────────────────────────────────────
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: findata-dq-engine:latest
+    container_name: findata-dq-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - PIPELINE_ENV=${PIPELINE_ENV:-development}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    command: >
+      streamlit run dashboard/app.py
+      --server.port=8501
+      --server.address=0.0.0.0
+      --server.headless=true
+      --browser.gatherUsageStats=false
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
