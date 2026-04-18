@@ -30,6 +30,7 @@ outputs/
 !data/mastered/.gitkeep
 !outputs/.gitkeep
 notes.docx
+~$notes.docx
 
 # ─── Fixtures de test (garder dans git) ──────────────────────────────────────
 !tests/fixtures/*.csv
