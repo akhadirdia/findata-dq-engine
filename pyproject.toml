@@ -5,7 +5,7 @@ build-backend = "setuptools.backends.legacy:build"
 [project]
 name = "findata-dq-engine"
 version = "0.1.0"
-description = "Financial & Insurance Data Quality Engine — Buzzelli Extended (12 dimensions)"
+description = "Financial and insurance data quality engine. Buzzelli Extended framework (12 dimensions: Completeness, Conformity, Coherence, Timeliness, Congruence, Privacy, Business Rules, Anomaly Detection), Isolation Forest anomaly detection, LLM remediation via Claude API, Raw→Staged→Mastered pipeline, FastAPI and Streamlit dashboard."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
