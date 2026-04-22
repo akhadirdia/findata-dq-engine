@@ -32,6 +32,7 @@ outputs/
 notes.docx
 ~$notes.docx
 CLAUDE.md
+pipeline.md
 
 # ─── Fixtures de test (garder dans git) ──────────────────────────────────────
 !tests/fixtures/*.csv
