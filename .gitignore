@@ -31,6 +31,7 @@ outputs/
 !outputs/.gitkeep
 notes.docx
 ~$notes.docx
+CLAUDE.md
 
 # ─── Fixtures de test (garder dans git) ──────────────────────────────────────
 !tests/fixtures/*.csv
